@@ -1,6 +1,7 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, FormView
@@ -83,7 +84,20 @@ class ContactFormView(DataMixin, FormView):
         return context|c_def
 
     def form_valid(self, form):
-        return redirect('home')
+        name = form.cleaned_data['name']
+        email = form.cleaned_data['email']
+        message = form.cleaned_data['content']
+
+        send_mail(
+            f'Message from {name}',
+            message,
+            email,
+            ['1vit77@rambler.ru'],
+            fail_silently=False,
+        )
+        return super().form_valid(form)
+
+
 
 class RegisterUser(DataMixin, CreateView):
     form_class = RegisterUserForm

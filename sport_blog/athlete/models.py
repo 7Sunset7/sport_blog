@@ -20,6 +20,9 @@ class Athlete(models.Model):
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_slug': self.slug})
 
+    class Meta:
+        ordering = ['updated_at']
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
